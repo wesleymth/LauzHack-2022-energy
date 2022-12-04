@@ -87,16 +87,17 @@ class IntelPowerGadget:
         else:
             return None
         
-IPG = IntelPowerGadget(duration=2,
-                    resolution=1000,
-                    output_dir ='logs',
-                    log_file_name='log_file.csv')
+#IPG = IntelPowerGadget(duration=2, resolution=1000, output_dir ='logs', log_file_name='log_file.csv')
 
-def extract_energy(path_to_log_infos:str)->list:
+"""def extract_energy(path_to_log_infos:str)->list:
     cumulative_energy = []
     for filename in os.listdir(path_to_log_infos):
         if filename.endswith('.csv'):
             df = pd.read_csv(os.path.join(path_to_log_infos,filename)).dropna()
             cumulative_energy.append(df['Cumulative Processor Energy_0(mWh)'].iloc[-1])
             
-    return cumulative_energy
+    return cumulative_energy"""
+
+def extract_energy(path_to_log_info:str)->list:
+    df = pd.read_csv(os.path.join(path_to_log_info)).dropna() 
+    return df['Cumulative Processor Energy_0(mWh)'].iloc[-1]
