@@ -22,7 +22,7 @@ def train_models(dataset = 'energy_dataset.csv') :
     #XGBoost
     xgboost = GradientBoostingRegressor(random_state=0).fit(one_hot_df, costs)
     dump(ridge, 'linear.joblib')
-    dump(xgboost, 'model.joblib')
+    dump(xgboost, 'xgboost.joblib')
     return ridge, xgboost
 
 """def one_hot_encoding_test(dataset) :
