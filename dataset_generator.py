@@ -75,8 +75,8 @@ def dataset_generator(nb_dataset_=5, all_sklearn=False) :
     else : 
         #models = getmembers(linear_model)
         models = [LinearRegression, Ridge]
-
-    for i, f in enumerate(models):
+    i = 0
+    for f in tqdm(models):
         try:
             for X, y in zip(Xs_train, ys_train):
                 #fit model and record energy consumption
@@ -95,6 +95,7 @@ def dataset_generator(nb_dataset_=5, all_sklearn=False) :
                 
                 #rest for the processor to avoid successiv computation that could biased the energy consumption measurements
                 time.sleep(2)
+                i += 1
         except:
             #extract the model for which the train didn't work (issues with the parameter in general)
             non_working_models.append(f)
@@ -106,7 +107,11 @@ def train_data_generator(D_sup_N=False, nb_dataset=5) :
     dataset_sizes = [2,3,4]
     if D_sup_N :
         Xs_train = [np.random.randn(nb_sample, nb_pred) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
+        ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
     else : 
         Xs_train = [np.random.randn(nb_sample, nb_pred) for nb_sample in dataset_sizes for nb_pred in dataset_sizes if nb_pred <= nb_sample]
-    ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes]
+        ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes if nb_pred <= nb_sample]
+    
     return Xs_train, ys_train
+
+
