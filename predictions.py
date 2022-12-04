@@ -1,7 +1,7 @@
 from dataset_generator import *
 from joblib import dump, load
 from data_processing import rename_categorical_cols
-from train_model import one_hot_encoding_test
+from train_model import one_hot_encoding
 
 def predict(df):
     model = load('xgboost.joblib')
