@@ -1,8 +1,6 @@
 using Pkg
 Pkg.activate(joinpath(@__DIR__, "Project.toml"))
-using PyCall
-sklearn = pyimport("sklearn")
-math.sin(math.pi / 4) 
+using PyCall, DataFrames, MLJ, MLJLinearModels, Random
 
 py"""
 import shutil
@@ -21,7 +19,7 @@ class IntelPowerGadget:
         output_dir: str = ".",
         duration=10,
         resolution=1000,
-        log_file_name="hola.csv",
+        log_file_name="powerlog.csv",
     ):
         self._log_file_path = os.path.join(output_dir, log_file_name)
         self._system = sys.platform.lower()
@@ -57,7 +55,6 @@ class IntelPowerGadget:
 
     def _log_values(self):
 
-        print(os.getcwd())
         returncode = None
         if self._system.startswith("win"):
             print(subprocess.PIPE)
@@ -85,21 +82,51 @@ class IntelPowerGadget:
     
 
 """
+
+
+
+
+Random.seed!(0)
+
+X = DataFrame(randn((1000000,100)), :auto)
+Y = randn(1000000)
+
+### Testing Linear Regressor
+
 py"""
 IP = IntelPowerGadget(duration=2, resolution=1000,
-log_file_name='qlkeurhgliq.csv')
+log_file_name='LinearRegressor.csv')
 
 """
-py"sinpi"(1)
+
 py"IP"._setup_cli()
-py"time.sleep"(1)
+machine(LinearRegressor(), X, Y)|>fit!
+py"time.sleep"(15)
+py"IP"._log_values()
+
+### Testing Ridge Regressor
+
+py"""
+IP = IntelPowerGadget(duration=2, resolution=1000,
+log_file_name='RidgeRegressor.csv')
+
+"""
+
+py"IP"._setup_cli()
+machine(RidgeRegressor(), X, Y)|>fit!
+py"IP"._log_values()
+
+### Testing Ridge Regressor
+
+py"""
+IP = IntelPowerGadget(duration=2, resolution=1000,
+log_file_name='LassoRegressor.csv')
+"""
+
+py"IP"._setup_cli()
+machine(LassoRegressor(), X, Y)|>fit!
 py"IP"._log_values()
 
 
+#### Test NN networks
 
-pwd()
-
-using LIKWID
-LIKWID.Power.measure(; cpuid=0, domainid=0) do
-    sleep(1)
-end
