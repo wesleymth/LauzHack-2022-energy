@@ -2,12 +2,21 @@ from os.path import join
 
 import pandas as pd
 
-files = [
-    (join("data", "sub_dataset_energy07-57-54_nico.csv"), join("data"," Model_features08-12-18_nico.csv")),
-    (join("data", "sub_dataset_energy07-40-32_guillaume.csv"), join("data", "Model_features08-15-31_guillaume.csv")),
-    (join("data", "sub_dataset_energy07-26-12_emma.csv"), join("data", "Model_features08-15-31_guillaume.csv")), # Not a typo, Emmas model feature file is corrupted 
-    (join("data", "sub_dataset_energy08-43-15_nico2.csv"), join("data", "Model_features09-17-12_nico2.csv"))
-]
+# # List of files:
+# files = [
+#     [join("data", "sub_dataset_energy07-57-54_nico.csv"), join("data","Model_features08-12-18_nico.csv")],
+#     [join("data", "sub_dataset_energy07-40-32_guillaume.csv"), join("data", "Model_features08-15-31_guillaume.csv")],
+#     [join("data", "sub_dataset_energy07-26-12_emma.csv"), join("data", "Model_features08-15-31_guillaume.csv")],
+#     [join("data", "sub_dataset_energy08-43-15_nico2.csv"), join("data", "Model_features09-17-12_nico2.csv")]
+# ]
+
+def convert_filepaths_to_df(files:list)->list:
+    """converts a list of file paths to a list of pd.DataFrames"""
+    for i in range(len(files)):
+        for j in range(len(files[i])):
+            files[i][j] = pd.read_csv(files[i][j])
+    return files
+
 
 def extract_energy_consumed(sub_data:pd.DataFrame)->list:
     """Extract the column of a sub data set produced with a codecarbon framework"""
@@ -44,16 +53,16 @@ def full_dataset_pipeline(pair_datas:list)->pd.DataFrame:
 
     Parameters
     ----------
-    pair_datas : list[str]
-        a list of tuples of string paths to csv files, with index 0 containing a `consumed_energy` column, index 1 are the extracted features
+    pair_datas : list[Tuple[pd.Dataframe]]
+        a list of tuples of dataframes, with index 0 containing a `consumed_energy` column, index 1 are the extracted features
 
     Returns
     -------
     pd.DataFrame
         The fully concatenated dataset.
     """
-    energy_cols = [extract_energy_consumed(pd.read_csv(df_e)) for df_e, _ in pair_datas]
-    energy_dfs = [add_energy_col(pd.read_csv(pair_datas[i][1]), energy_cols[i]) for i in range(len(energy_cols))]
+    energy_cols = [extract_energy_consumed(df_e) for df_e, _ in pair_datas]
+    energy_dfs = [add_energy_col(pair_datas[i][1], energy_cols[i]) for i in range(len(energy_cols))]
     full_data_set = concat_subsets(energy_dfs)
     full_data_set = drop_memory_features(full_data_set)
     return rename_categorical_cols(full_data_set)
