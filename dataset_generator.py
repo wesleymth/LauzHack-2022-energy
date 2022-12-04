@@ -33,8 +33,8 @@ def dataset_generator(dataset_sizes = [20,500,2000], all_sklearn=False) :
     if all_sklearn :
         models = getmembers(skl.svm) + getmembers(skl.linear_model) + getmembers(skl.tree) + getmembers(skl.neural_network) + getmembers(skl.preprocessing) + getmembers(skl.ensemble)
     else : 
-        models = getmembers(linear_model)
-        #models = [LinearRegression, Ridge]
+        #models = getmembers(linear_model)
+        models = [LinearRegression]
         
         #IPG = IntelPowerGadget(duration=2, resolution=1000, #output_dir ='logs', log_file_name='log_file.csv')
     tracker = EmissionsTracker(output_file="sub_dataset_energy"+datetime.now().strftime("%H-%M-%S")+".csv", log_level='error')   
@@ -44,19 +44,19 @@ def dataset_generator(dataset_sizes = [20,500,2000], all_sklearn=False) :
                 #fit model and record energy consumption 
                            
                 tracker.start()
-                f[1]().fit(X,y)
-                #f().fit(X,y)
+                #f[1]().fit(X,y)
+                f().fit(X,y)
                 tracker.stop()
                 #IPG._log_values()
                 
-                dataset.loc[len(dataset)] = list(dall.values()) + [f[0], X.shape[0], X.shape[1]]
-                
+                #dataset.loc[len(dataset)] = list(dall.values()) + [f[0], X.shape[0], X.shape[1]]
+                dataset.loc[len(dataset)] = list(dall.values()) + [f.__name__, X.shape[0], X.shape[1]]
                 
         except:
             #extract the model for which the train didn't work (issues with the parameter in general)
             non_working_models.append(f)
             pass
-    dataset.to_csv("Model_features"+datetime.now().strftime("%H-%M-%S")+".csv")
+    dataset.to_csv("./logs/Model_features"+datetime.now().strftime("%H-%M-%S")+".csv")
     return dataset, non_working_models
 
 def train_data_generator(D_sup_N=False, dataset_sizes = [20,500,1000]) :
@@ -69,6 +69,3 @@ def train_data_generator(D_sup_N=False, dataset_sizes = [20,500,1000]) :
         ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes if nb_pred <= nb_sample]
     
     return Xs_train, ys_train
-
-
-data = dataset_generator()
