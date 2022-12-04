@@ -50,7 +50,7 @@ def dataset_generator(dataset_sizes:list=[20,500,2000], all_sklearn:bool=False)-
         #models = [LinearRegression, Ridge]
         
         #IPG = IntelPowerGadget(duration=2, resolution=1000, #output_dir ='logs', log_file_name='log_file.csv')
-    tracker = EmissionsTracker(output_file="sub_dataset_energy"+datetime.now().strftime("%H-%M-%S")+".csv", log_level='error')   
+    tracker = EmissionsTracker(output_dir="data/", output_file="sub_dataset_energy"+datetime.now().strftime("%H-%M-%S")+".csv", log_level='error')   
     tracker.flush()
     for f in tqdm(models):
         try:
@@ -69,7 +69,7 @@ def dataset_generator(dataset_sizes:list=[20,500,2000], all_sklearn:bool=False)-
             #extract the model for which the train didn't work (issues with the parameter in general)
             non_working_models.append(f)
             pass
-    dataset.to_csv("Model_features"+datetime.now().strftime("%H-%M-%S")+".csv")
+    dataset.to_csv("data/Model_features"+datetime.now().strftime("%H-%M-%S")+".csv")
     return dataset, non_working_models
 
 def train_data_generator(D_sup_N:bool=False, dataset_sizes:list=[20,500,1000]):
