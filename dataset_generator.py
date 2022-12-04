@@ -18,7 +18,7 @@ from datetime import datetime
 np.random.seed(42)
 random.seed(42)
 
-def dataset_generator(dataset_sizes = [100,2000,5000], all_sklearn=False) : 
+def dataset_generator(dataset_sizes = [20,500,2000], all_sklearn=False) : 
     Xs_train, ys_train = train_data_generator(D_sup_N = False, dataset_sizes = dataset_sizes)
     #dataset = dataset_initiator()
     
@@ -49,7 +49,7 @@ def dataset_generator(dataset_sizes = [100,2000,5000], all_sklearn=False) :
                 tracker.stop()
                 #IPG._log_values()
                 
-                dataset.loc[len(dataset)] = list(dall.values()) + [f.__name__, X.shape[0], X.shape[1]]
+                dataset.loc[len(dataset)] = list(dall.values()) + [f[0], X.shape[0], X.shape[1]]
                 
                 
         except:
@@ -57,11 +57,10 @@ def dataset_generator(dataset_sizes = [100,2000,5000], all_sklearn=False) :
             non_working_models.append(f)
             pass
     dataset.to_csv("Model_features"+datetime.now().strftime("%H-%M-%S")+".csv")
-    return dataset
+    return dataset, non_working_models
 
-def train_data_generator(D_sup_N=False, dataset_sizes = [100,2000,5000]) :
+def train_data_generator(D_sup_N=False, dataset_sizes = [20,500,1000]) :
     #dataset_sizes = np.around(np.logspace(1,nb_dataset,nb_dataset)).astype(int)
-    dataset_sizes = [100,2000,5000]
     if D_sup_N :
         Xs_train = [np.random.randn(nb_sample, nb_pred) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
         ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
@@ -72,3 +71,4 @@ def train_data_generator(D_sup_N=False, dataset_sizes = [100,2000,5000]) :
     return Xs_train, ys_train
 
 
+data = dataset_generator()
