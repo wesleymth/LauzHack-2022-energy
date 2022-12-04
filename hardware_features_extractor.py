@@ -1,17 +1,13 @@
-import cpuinfo
 import re
 import platform
-import GPUtil
 import psutil
+import cpuinfo
+
+import GPUtil
 
 def get_cpu_features():
-    """_summary_
-
-    Returns
-    -------
-    _type_
-        _description_
-    """
+    """Get relevant predictors about the CPU"""
+    # TODO : Select as many predictors as possible and eliminate the non relevant ones using for eg a lasso path
     cpu_infos = cpuinfo.get_cpu_info()
     return {"CPU_count": cpu_infos['count'],
             "CPU_vendor_id": cpu_infos['vendor_id_raw'],
@@ -20,6 +16,7 @@ def get_cpu_features():
             }
 
 def get_system_features():
+    """Get relevant predictors about the system"""
     # TODO : Add more relevant features.
     return {
         "os" : platform.system()
@@ -35,6 +32,8 @@ def get_GPU_features():
         }
 
 def get_memory_features():
+    """Get relevant predictors about the memory"""
+    # TODO: Add more relevant features
     mem = psutil.virtual_memory()
     swap = psutil.swap_memory()
     return {
