@@ -14,7 +14,7 @@ py"""
 from codecarbon import EmissionsTracker
 from datetime import datetime
 
-tracker = EmissionsTracker(output_dir ='logs', output_file="sub_dataset_energy.csv", log_level='error')
+tracker = EmissionsTracker(output_dir ='logs', output_file="log.csv", project_name="LinearRegressor", log_level='error')
 """
 
 py"tracker".start()
@@ -24,25 +24,22 @@ py"tracker".stop()
 ### Testing Ridge Regressor
 
 py"""
-IP = IntelPowerGadget(duration=2, resolution=1000,
-log_file_name='RidgeRegressor.csv')
-
+tracker = EmissionsTracker(output_dir ='logs', project_name="RidgeRegressor", log_level='error')
 """
 
-py"IP"._setup_cli()
+py"tracker".start()
 machine(RidgeRegressor(), X, Y)|>fit!
-py"IP"._log_values()
+py"tracker".stop()
 
 ### Testing Ridge Regressor
 
 py"""
-IP = IntelPowerGadget(duration=2, resolution=1000,
-log_file_name='LassoRegressor.csv')
+tracker = EmissionsTracker(output_dir ='logs', project_name="LassoRegressor", log_level='error')
 """
 
-py"IP"._setup_cli()
+py"tracker".start()
 machine(LassoRegressor(), X, Y)|>fit!
-py"IP"._log_values()
+py"IP".stop()
 
 
 #### Test NN networks

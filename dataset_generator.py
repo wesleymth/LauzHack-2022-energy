@@ -69,6 +69,3 @@ def train_data_generator(D_sup_N=False, dataset_sizes = [20,500,1000]) :
         ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes if nb_pred <= nb_sample]
     
     return Xs_train, ys_train
-
-
-data = dataset_generator()
