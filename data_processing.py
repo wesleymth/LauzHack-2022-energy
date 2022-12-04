@@ -40,6 +40,15 @@ def drop_memory_features(full_data_set:pd.DataFrame)->pd.DataFrame:
     """/!\ for now memory features are not dynamics, it is in the TODO, therefore drop these columns"""
     return full_data_set.drop(columns = ["memory_available_B", "swap_free_B"])
 
+def rename_categorical_cols(data_to_rename:pd.DataFrame)->pd.DataFrame:
+    """Rename all categorical predictors with a suffix `name_`"""
+    return data_to_rename.rename(columns = {'CPU_vendor_id':'name_CPU_vendor_id', 
+                                            'core_architecture':'name_core_architecture',
+                                            'os':'name_os',
+                                            'model_name' : 'name_model'
+                                            })
+    
+
 def full_dataset_pipeline(pair_datas:list)->pd.DataFrame:
     """Gets the entire enery of an ML model dataset.
 
@@ -56,16 +65,10 @@ def full_dataset_pipeline(pair_datas:list)->pd.DataFrame:
     energy_cols = [extract_energy_consumed(df_e) for df_e, _ in pair_datas]
     energy_dfs = [add_energy_col(pair_datas[1][i], energy_cols[i]) for i in range(len(energy_cols))]
     full_data_set = concat_subsets(energy_dfs)
-    return drop_memory_features(full_data_set)
+    full_data_set = drop_memory_features(full_data_set)
+    return rename_categorical_cols(full_data_set)
         
-def rename_categorical_cols(data_to_rename:pd.DataFrame)->pd.DataFrame:
-    """Rename all categorical predictors with a suffix `name_`"""
-    return data_to_rename.rename(columns = {'CPU_vendor_id':'name_CPU_vendor_id', 
-                                            'core_architecture':'name_core_architecture',
-                                            'os':'name_os',
-                                            'model_name' : 'name_model'
-                                            })
-    
+
     
     
     
