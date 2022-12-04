@@ -44,16 +44,16 @@ def full_dataset_pipeline(pair_datas:list)->pd.DataFrame:
 
     Parameters
     ----------
-    pair_datas : list[Tuple[pd.DataFrame]]
-        a list of tuples of pd.DataFrame, with index 0 containing a `consumed_energy` column, index 1 are the extracted features
+    pair_datas : list[str]
+        a list of tuples of string paths to csv files, with index 0 containing a `consumed_energy` column, index 1 are the extracted features
 
     Returns
     -------
     pd.DataFrame
         The fully concatenated dataset.
     """
-    energy_cols = [extract_energy_consumed(df_e) for df_e, _ in pair_datas]
-    energy_dfs = [add_energy_col(pair_datas[1][i], energy_cols[i]) for i in range(len(energy_cols))]
+    energy_cols = [extract_energy_consumed(pd.read_csv(df_e)) for df_e, _ in pair_datas]
+    energy_dfs = [add_energy_col(pd.read_csv(pair_datas[i][1]), energy_cols[i]) for i in range(len(energy_cols))]
     full_data_set = concat_subsets(energy_dfs)
     full_data_set = drop_memory_features(full_data_set)
     return rename_categorical_cols(full_data_set)
