@@ -2,11 +2,12 @@ import shutil
 import os
 import subprocess
 import sys
+
 import pandas as pd
 
 class IntelPowerGadget:
-    # https://stackoverflow.com/questions/72086226/intelpowergadget-how-to-get-specific-information-of-my-cpu
     """
+    Taken from : https://stackoverflow.com/questions/72086226/intelpowergadget-how-to-get-specific-information-of-my-cpu
         Set up IntePowerGadget software and associated path.
         Create a command line using this path to run the software.
         Create a csv file with all the results inside.
@@ -98,6 +99,7 @@ class IntelPowerGadget:
             
     return cumulative_energy"""
 
-def extract_energy(path_to_log_info:str)->list:
+def extract_energy(path_to_log_info:str)->float:
+    """Get the energy consumption from the Intel Power Gadget api found on stackoverflow"""
     df = pd.read_csv(os.path.join(path_to_log_info)).dropna() 
     return df['Cumulative Processor Energy_0(mWh)'].iloc[-1]

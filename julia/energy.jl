@@ -1,131 +1,119 @@
 using Pkg
 Pkg.activate(joinpath(@__DIR__, "Project.toml"))
-using PyCall, DataFrames, MLJ, MLJLinearModels, Random
+using PyCall, DataFrames, MLJ, MLJLinearModels, Random, Conda
+cd(@__DIR__)
 
-py"""
-import shutil
-import os
-import subprocess
-import sys
-import time
-class IntelPowerGadget:
-
-    _osx_exec = "PowerLog"
-    _osx_exec_backup = "/Applications/Intel Power Gadget/PowerLog"
-    _windows_exec = "PowerLog3.0.exe"
-    _windows_exec_backup = "C:\\Program Files\\Intel\\Power Gadget 3.6\\PowerLog3.0.exe"
-    def __init__(
-        self,
-        output_dir: str = ".",
-        duration=10,
-        resolution=1000,
-        log_file_name="powerlog.csv",
-    ):
-        self._log_file_path = os.path.join(output_dir, log_file_name)
-        self._system = sys.platform.lower()
-        self._duration = duration
-        self._resolution = resolution
-        self._setup_cli()
-
-    def _setup_cli(self):
-
-        if self._system.startswith("win"):
-            if shutil.which(self._windows_exec):
-                self._cli = shutil.which(
-                    self._windows_exec
-                )  # Windows exec is a relative path
-            elif shutil.which(self._windows_exec_backup):
-                self._cli = self._windows_exec_backup
-            else:
-                raise FileNotFoundError(
-                    f"Intel Power Gadget executable not found on {self._system}"
-                )
-        elif self._system.startswith("darwin"):
-            if shutil.which(self._osx_exec):
-                self._cli = self._osx_exec
-            elif shutil.which(self._osx_exec_backup):
-                self._cli = self._osx_exec_backup
-            else:
-                raise FileNotFoundError(
-                    f"Intel Power Gadget executable not found on {self._system}"
-                )
-        else:
-            raise SystemError("Platform not supported by Intel Power Gadget")
-
-
-    def _log_values(self):
-
-        returncode = None
-        if self._system.startswith("win"):
-            print(subprocess.PIPE)
-            returncode = subprocess.call(
-                [
-                    self._cli,
-                    "-duration",
-                    str(self._duration),
-                    "-resolution",
-                    str(self._resolution),
-                    "-file",
-                    self._log_file_path,
-                ],
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-        elif self._system.startswith("darwin"):
-            returncode = subprocess.call(
-                f"'{self._cli}' -duration {self._duration} -resolution {self._resolution} -file {self._log_file_path} > /dev/null",  # noqa: E501
-                shell=True,
-            )
-        else:
-            return None
-    
-
-"""
-
-
-
-
-Random.seed!(0)
+Random.seed!(42)
 
 X = DataFrame(randn((1000000,100)), :auto)
 Y = randn(1000000)
-
+results = DataFrame("CPU_count"=> String[], "CPU_vendor_id"=>String[], "CPU_GHz"=>Int[],"core_architecture"=>String[],
+"memory_available_B"=>Int[], "swap_free_B"=>Int[], "OS"=>String[], "model_name"=>String[], "nb_sample"=>Int[], "nb_preds"=>Int[])
 ### Testing Linear Regressor
 
-py"""
-IP = IntelPowerGadget(duration=2, resolution=1000,
-log_file_name='LinearRegressor.csv')
 
+# import re
+# import platform
+# import psutil
+# import cpuinfo
+
+# import GPUtil
+
+# def get_cpu_features():
+    
+#     cpu_infos = cpuinfo.get_cpu_info()
+#     return {"CPU_count": cpu_infos['count'],
+#             "CPU_vendor_id": cpu_infos['vendor_id_raw'],
+#             "CPU_GHz": float(re.findall("\d+\.\d+", cpu_infos['hz_advertised_friendly'])[0]),
+#             "core_architecture" : cpu_infos['arch_string_raw']
+#             }
+
+# def get_system_features():
+#     return {
+#         "os" : platform.system()
+#     }
+        
+
+# def get_GPU_features():
+
+#     if len(GPUtil.getGPUs()) != 0:
+#         return {
+#             "GPU_name" : GPUtil.getGPUs()[0].name
+#         }
+
+# def get_memory_features():
+
+#     mem = psutil.virtual_memory()
+#     swap = psutil.swap_memory()
+#     return {
+#         "memory_available_B" : mem.available,
+#         "swap_free_B" : swap.free
+#     }
+
+py"""
+
+def train_data_generator(D_sup_N:bool=False, dataset_sizes:list=[20,500,1000]):
+   
+    if D_sup_N :
+        Xs_train = [np.random.randn(nb_sample, nb_pred) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
+        ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
+    else : 
+        Xs_train = [np.random.randn(nb_sample, nb_pred) for nb_sample in dataset_sizes for nb_pred in dataset_sizes if nb_pred <= nb_sample]
+        ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes if nb_pred <= nb_sample]
+    
+    return Xs_train, ys_train
 """
 
-py"IP"._setup_cli()
-machine(LinearRegressor(), X, Y)|>fit!
-py"time.sleep"(15)
-py"IP"._log_values()
+py"""
+from codecarbon import EmissionsTracker
+from datetime import datetime
+import numpy as np
+"""
+
+# py"""
+# train_data = train_data_generator()
+# """
+
+py"""
+tracker = EmissionsTracker(output_dir ='logs', output_file="log.csv", project_name="LinearRegressor", log_level='error')
+tracker.flush()
+"""
+
+datax, datay = py"train_data_generator".()
+datax = [DataFrame(d, :auto) for d in datax]
+for (i,d) in pairs(datax)
+    py"tracker".start()
+    machine(LinearRegressor(), d, datay[i])|>fit!
+    py"tracker".stop()
+end
 
 ### Testing Ridge Regressor
 
 py"""
-IP = IntelPowerGadget(duration=2, resolution=1000,
-log_file_name='RidgeRegressor.csv')
-
+tracker = EmissionsTracker(output_dir ='logs', project_name="RidgeRegressor", log_level='error')
 """
 
-py"IP"._setup_cli()
-machine(RidgeRegressor(), X, Y)|>fit!
-py"IP"._log_values()
+datax, datay = py"train_data_generator".()
+datax = [DataFrame(d, :auto) for d in datax]
+for (i,d) in pairs(datax)
+    py"tracker".start()
+    machine(RidgeRegressor(), d, datay[i])|>fit!
+    py"tracker".stop()
+end
 
 ### Testing Ridge Regressor
 
 py"""
-IP = IntelPowerGadget(duration=2, resolution=1000,
-log_file_name='LassoRegressor.csv')
+tracker = EmissionsTracker(output_dir ='logs', project_name="LassoRegressor", log_level='error')
 """
 
-py"IP"._setup_cli()
-machine(LassoRegressor(), X, Y)|>fit!
-py"IP"._log_values()
+datax, datay = py"train_data_generator".()
+datax = [DataFrame(d, :auto) for d in datax]
+for (i,d) in pairs(datax)
+    py"tracker".start()
+    machine(LassoRegressor(), d, datay[i])|>fit!
+    py"tracker".stop()
+end
 
 
 #### Test NN networks
