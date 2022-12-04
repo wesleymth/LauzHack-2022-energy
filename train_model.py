@@ -40,4 +40,4 @@ def one_hot_encoding(dataset) :
     transformed = one_hot_encoder.fit_transform(dataset)
     one_hot_df = pd.DataFrame(transformed.todense(), columns=one_hot_encoder.get_feature_names_out())
     dump(one_hot_encoder, 'one_hot_encoder.joblib')
-    return one_hot_df, one_hot_encoder
+    return one_hot_df
