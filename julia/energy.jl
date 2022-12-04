@@ -1,6 +1,6 @@
 using Pkg
 Pkg.activate(joinpath(@__DIR__, "Project.toml"))
-using PyCall, DataFrames, MLJ, MLJLinearModels, Random, Conda
+using PyCall, DataFrames, MLJ, MLJLinearModels, Random, Conda, CSV
 cd(@__DIR__)
 
 Random.seed!(42)
@@ -11,53 +11,6 @@ results = DataFrame("CPU_count"=> String[], "CPU_vendor_id"=>String[], "CPU_GHz"
 "memory_available_B"=>Int[], "swap_free_B"=>Int[], "OS"=>String[], "model_name"=>String[], "nb_sample"=>Int[], "nb_preds"=>Int[])
 ### Testing Linear Regressor
 
-py"""
-import re
-import platform
-import psutil
-import cpuinfo
-
-import GPUtil
-
-def get_cpu_features():
-    
-    cpu_infos = cpuinfo.get_cpu_info()
-    return {"CPU_count": cpu_infos['count'],
-            "CPU_vendor_id": cpu_infos['vendor_id_raw'],
-            "CPU_GHz": float(re.findall("\d+\.\d+", cpu_infos['hz_advertised_friendly'])[0]),
-            "core_architecture" : cpu_infos['arch_string_raw']
-            }
-
-def get_system_features():
-    return {
-        "os" : platform.system()
-    }
-        
-
-def get_GPU_features():
-
-    if len(GPUtil.getGPUs()) != 0:
-        return {
-            "GPU_name" : GPUtil.getGPUs()[0].name
-        }
-
-def get_memory_features():
-
-    mem = psutil.virtual_memory()
-    swap = psutil.swap_memory()
-    return {
-        "memory_available_B" : mem.available,
-        "swap_free_B" : swap.free
-    }
-"""
-
-py"""
-import cpuinfo
-print(cpuinfo.get_cpu_info())
-"""
-py"""
-print(a)
-"""
 py"""
 
 def train_data_generator(D_sup_N:bool=False, dataset_sizes:list=[20,500,1000]):
@@ -78,15 +31,8 @@ from datetime import datetime
 import numpy as np
 """
 
-py"cpuinfo.get_cpu_info".()
-
-# py"""
-# train_data = train_data_generator()
-# """
-
 py"""
 tracker = EmissionsTracker(output_dir ='logs', output_file="log.csv", project_name="LinearRegressor", log_level='error')
-tracker.flush()
 """
 
 datax, datay = py"train_data_generator".()
@@ -125,6 +71,7 @@ for (i,d) in pairs(datax)
     py"tracker".stop()
 end
 
-
-#### Test NN networks
-
+# table = CSV.read("../data/Model_features08-12-18_nico.csv",DataFrame)
+# t2 = CSV.read("logs/log.csv",DataFrame)
+# t3 = CSV.read("logs/emissions.csv", DataFrame)
+# table = table[1:18,]
