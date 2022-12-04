@@ -2,12 +2,12 @@ from os.path import join
 
 import pandas as pd
 
-model_feat_nico = pd.read_csv(join("data", "Model_features08-12-18_nico.csv"))
-sub_data_nico = pd.read_csv(join("data", "sub_dataset_energy07-57-54_nico.csv"))
-
-model_feat_gui = pd.read_csv(join("data", "Model_features08-15-31_guillaume.csv"))
-sub_data_gui = pd.read_csv(join("data", "sub_dataset_energy07-40-32_guillaume.csv"))
-
+files = [
+    (join("data", "sub_dataset_energy07-57-54_nico.csv"), join("data"," Model_features08-12-18_nico.csv")),
+    (join("data", "sub_dataset_energy07-40-32_guillaume.csv"), join("data", "Model_features08-15-31_guillaume.csv")),
+    (join("data", "sub_dataset_energy07-26-12_emma.csv"), join("data", "Model_features08-15-31_guillaume.csv")), # Not a typo, Emmas model feature file is corrupted 
+    (join("data", "sub_dataset_energy08-43-15_nico2.csv"), join("data", "Model_features09-17-12_nico2.csv"))
+]
 
 def extract_energy_consumed(sub_data:pd.DataFrame)->list:
     """Extract the column of a sub data set produced with a codecarbon framework"""
@@ -23,18 +23,9 @@ def add_energy_col(data_set:pd.DataFrame, energy:list)-> pd.DataFrame:
     data_set['energy_consumed'] = energy
     return data_set
 
-energy_n = extract_energy_consumed(sub_data_nico)
-sub_data_e_n = add_energy_col(model_feat_nico, energy_n)
-
-
-energy_g = extract_energy_consumed(sub_data_gui)
-sub_data_e_g = add_energy_col(model_feat_gui, energy_g)
-
 def concat_subsets(subsets:list)->pd.DataFrame:
     """concatenate two subsets together"""
     return pd.concat(subsets, axis=0).reset_index(drop=True)
-
-full_data_set = concat_subsets(sub_data_e_n, sub_data_e_n)
 
 def drop_memory_features(full_data_set:pd.DataFrame)->pd.DataFrame:
     """/!\ for now memory features are not dynamics, it is in the TODO, therefore drop these columns"""
@@ -48,7 +39,6 @@ def rename_categorical_cols(data_to_rename:pd.DataFrame)->pd.DataFrame:
                                             'model_name' : 'name_model'
                                             })
     
-
 def full_dataset_pipeline(pair_datas:list)->pd.DataFrame:
     """Gets the entire enery of an ML model dataset.
 
@@ -67,9 +57,16 @@ def full_dataset_pipeline(pair_datas:list)->pd.DataFrame:
     full_data_set = concat_subsets(energy_dfs)
     full_data_set = drop_memory_features(full_data_set)
     return rename_categorical_cols(full_data_set)
+
+
+# energy_n = extract_energy_consumed(sub_data_nico)
+# sub_data_e_n = add_energy_col(model_feat_nico, energy_n)
+# energy_g = extract_energy_consumed(sub_data_gui)
+# sub_data_e_g = add_energy_col(model_feat_gui, energy_g)
         
+# model_feat_nico = pd.read_csv(join("data", "Model_features08-12-18_nico.csv"))
+# sub_data_nico = pd.read_csv(join("data", "sub_dataset_energy07-57-54_nico.csv"))
+# model_feat_gui = pd.read_csv(join("data", "Model_features08-15-31_guillaume.csv"))
+# sub_data_gui = pd.read_csv(join("data", "sub_dataset_energy07-40-32_guillaume.csv"))
 
-    
-    
-    
-
+# full_data_set = concat_subsets(sub_data_e_n, sub_data_e_n)
