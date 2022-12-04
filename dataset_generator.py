@@ -61,7 +61,6 @@ def dataset_generator(dataset_sizes = [100,2000,5000], all_sklearn=False) :
 
 def train_data_generator(D_sup_N=False, dataset_sizes = [100,2000,5000]) :
     #dataset_sizes = np.around(np.logspace(1,nb_dataset,nb_dataset)).astype(int)
-    dataset_sizes = [100,2000,5000]
     if D_sup_N :
         Xs_train = [np.random.randn(nb_sample, nb_pred) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
         ys_train = [np.random.randint(0,2,nb_sample) for nb_sample in dataset_sizes for nb_pred in dataset_sizes]
