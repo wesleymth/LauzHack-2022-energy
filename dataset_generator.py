@@ -1,29 +1,35 @@
 from codecarbon import EmissionsTracker
 import numpy as np
-import sklearn.linear_model as skl
+import sklearn as skl
 from inspect import getmembers
 import time
 from tqdm import tqdm
 #from dataset_initiator import dataset_initiator
+from energy_extractor_intel import *
 
 np.random.seed()
-def dataset_generator(nb_dataset_=5) : 
+def dataset_generator(nb_dataset_=5, all_sklearn=False) : 
     Xs_train, ys_train = train_data_generator(D_sup_N = False, nb_dataset = nb_dataset_)
     #dataset = dataset_initiator()
     tracker = EmissionsTracker()
     non_working_models = []
+    
+    if all_sklearn :
+        models = getmembers(skl.svm) + getmembers(skl.linear_model) + getmembers(skl.tree) + getmembers(skl.neural_network) + getmembers(skl.preprocessing) + getmembers(skl.ensemble)
+    else : 
+        models = getmembers(skl.linear_model)
 
-    for f in tqdm(getmembers(skl)):
+    for f in tqdm(models):
         try:
             if(f[0][0]!='_'):
                 for X,y in zip(Xs_train, ys_train):
                     #fit model and record energy consumption
-                    tracker.start()
+                    IPG._setup_cli()
                     f[1]().fit(X,y)
-                    tracker.stop()
+                    IPG._log_values()
                     
                     #add sample to dataset
-                    #dataset.add_sample(f.__name__, X.shape[0], X.shape[1])
+                    dataset.add_sample(f.__name__, X.shape[0], X.shape[1])
                     
                     #rest for the processor to avoid successiv computation that could biased the energy consumption measurements
                     time.sleep(2)
