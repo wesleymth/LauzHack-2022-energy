@@ -22,6 +22,7 @@ def train_models(dataset = 'energy_dataset.csv') :
     return ridge, xgboost
 
 def one_hot_encoding(dataset) :
+    dataset = rename_categorical_cols(dataset)
     one_hot_encoder = make_column_transformer((OneHotEncoder(drop ='first'), dataset.columns.str.contains('name')), remainder='passthrough')
     one_hot_df = pd.DataFrame(one_hot_encoder.fit_transform(dataset), columns=one_hot_encoder.get_feature_names_out())
     return one_hot_df
