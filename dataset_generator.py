@@ -48,7 +48,7 @@ def dataset_generator(dataset_sizes:list=[20,500,2000], all_sklearn:bool=False)-
         models = getmembers(skl.svm) + getmembers(skl.linear_model) + getmembers(skl.tree) + getmembers(skl.neural_network) + getmembers(skl.preprocessing) + getmembers(skl.ensemble)
     else : 
         models = getmembers(linear_model)
-        #models = [LinearRegression, Ridge]
+        #models = [LinearRegression]
         
         #IPG = IntelPowerGadget(duration=2, resolution=1000, #output_dir ='logs', log_file_name='log_file.csv')
     tracker = EmissionsTracker(output_dir="data/", output_file="sub_dataset_energy"+datetime.now().strftime("%H-%M-%S")+".csv", log_level='error')   
