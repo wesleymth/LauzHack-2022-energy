@@ -18,7 +18,7 @@ from datetime import datetime
 np.random.seed(42)
 random.seed(42)
 
-def dataset_generator(dataset_sizes = [100,2000,5000], all_sklearn=False) : 
+def dataset_generator(dataset_sizes = [20,500,1000], all_sklearn=False) : 
     Xs_train, ys_train = train_data_generator(D_sup_N = False, dataset_sizes = dataset_sizes)
     #dataset = dataset_initiator()
     
@@ -49,7 +49,8 @@ def dataset_generator(dataset_sizes = [100,2000,5000], all_sklearn=False) :
                 tracker.stop()
                 #IPG._log_values()
                 
-                dataset.loc[len(dataset)] = list(dall.values()) + [f.__name__, X.shape[0], X.shape[1]]
+                #dataset.loc[len(dataset)] = list(dall.values()) + [f.__name__, X.shape[0], X.shape[1]]
+                dataset.loc[len(dataset)] = list(dall.values()) + [f[0], X.shape[0], X.shape[1]]
                 
                 
         except:
