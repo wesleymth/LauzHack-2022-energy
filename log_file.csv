@@ -1,0 +1,20 @@
+"System Time","RDTSC","Elapsed Time (sec)","CPU Utilization(%)","CPU Frequency_0(MHz)","CPU Min Frequency_0(MHz)","CPU Max Frequency_0(MHz)","CPU Requsted Frequency_0(MHz)","Processor Power_0(Watt)","Cumulative Processor Energy_0(Joules)","Cumulative Processor Energy_0(mWh)","IA Power_0(Watt)","Cumulative IA Energy_0(Joules)","Cumulative IA Energy_0(mWh)","Package Temperature_0(C)","Package Hot_0","CPU Min Temperature_0(C)","CPU Max Temperature_0(C)","DRAM Power_0(Watt)","Cumulative DRAM Energy_0(Joules)","Cumulative DRAM Energy_0(mWh)","Package Power Limit_0(Watt)","GT Frequency(MHz)","GT Requsted Frequency(MHz)"
+"02:48:35:244","92852239433727","   1.000","  64.238"," 2594"," 2300"," 2600"," 2600","  13.100","  13.101","   3.639","   9.249","   9.250","   2.569"," 69","0"," 64"," 69","   1.107","   1.107","   0.307","  28.000","    0","    0"
+"02:48:36:253","92855171337981","   2.010","  62.653"," 2594"," 2200"," 2600"," 2600","  13.140","  26.367","   7.324","   9.209","  18.548","   5.152"," 68","0"," 65"," 69","   1.098","   2.216","   0.615","  28.000","    0","    0"
+"02:48:37:258","92858088346013","   3.014","  63.106"," 2594"," 2500"," 2600"," 2600","  13.262","  39.688","  11.024","   9.227","  27.815","   7.727"," 67","0"," 65"," 70","   1.155","   3.376","   0.938","  28.000","    0","    0"
+"02:48:38:259","92860995265753","   4.015","  67.054"," 2594"," 2500"," 2600"," 2600","  13.260","  52.962","  14.712","   9.303","  37.128","  10.313"," 68","0"," 65"," 70","   1.076","   4.453","   1.237","  28.000","    0","    0"
+
+"Total Elapsed Time (sec) = 4.015174"
+"Measured RDTSC Frequency (GHz) = 2.904"
+
+"Cumulative Package Energy_0 (Joules) = 52.961792"
+"Cumulative Package Energy_0 (mWh) = 14.711609"
+"Average Package Power_0 (Watt) = 13.190410"
+
+"Cumulative IA Energy_0 (Joules) = 37.128113"
+"Cumulative IA Energy_0 (mWh) = 10.313365"
+"Average Package IA_0 (Watt) = 9.246950"
+
+"Cumulative DRAM Energy_0 (Joules) = 4.452942"
+"Cumulative DRAM Energy_0 (mWh) = 1.236928"
+"Average Package DRAM_0 (Watt) = 1.109028"
