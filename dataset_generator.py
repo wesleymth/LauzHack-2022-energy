@@ -38,6 +38,7 @@ def dataset_generator(dataset_sizes = [20,500,2000], all_sklearn=False) :
         
         #IPG = IntelPowerGadget(duration=2, resolution=1000, #output_dir ='logs', log_file_name='log_file.csv')
     tracker = EmissionsTracker(output_file="sub_dataset_energy"+datetime.now().strftime("%H-%M-%S")+".csv", log_level='error')   
+    tracker.flush()
     for f in tqdm(models):
         try:
             for X, y in zip(Xs_train, ys_train):
