@@ -58,6 +58,14 @@ def full_dataset_pipeline(pair_datas:list)->pd.DataFrame:
     full_data_set = concat_subsets(energy_dfs)
     return drop_memory_features(full_data_set)
         
+def rename_categorical_cols(data_to_rename:pd.DataFrame)->pd.DataFrame:
+    """Rename all categorical predictors with a suffix `name_`"""
+    return data_to_rename.rename(columns = {'CPU_vendor_id':'name_CPU_vendor_id', 
+                                            'core_architecture':'name_core_architecture',
+                                            'os':'name_os',
+                                            'model_name' : 'name_model'
+                                            })
+    
     
     
     
