@@ -17,13 +17,13 @@ def train_models(dataset = 'energy_dataset.csv') :
     one_hot_df = one_hot_encoding(dataset_X)
 
     #Linear Regression Method with logarithmization of the costs
-    ridge = LinearRegression().fit(one_hot_df, np.log(costs))
+    linear = LinearRegression().fit(one_hot_df, np.log(costs))
 
     #XGBoost
     xgboost = GradientBoostingRegressor(random_state=0).fit(one_hot_df, costs)
-    dump(ridge, 'linear.joblib')
+    dump(linear, 'linear.joblib')
     dump(xgboost, 'xgboost.joblib')
-    return ridge, xgboost
+    return linear, xgboost
 
 """def one_hot_encoding_test(dataset) :
     dataset = rename_categorical_cols(dataset)

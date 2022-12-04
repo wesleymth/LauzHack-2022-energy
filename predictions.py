@@ -4,7 +4,7 @@ from data_processing import rename_categorical_cols
 from train_model import one_hot_encoding
 
 def predict(df):
-    model = load('xgboost.joblib')
+    model = load('linear.joblib')
     return model.predict(df)
 
 def energy(model, X):
@@ -15,9 +15,6 @@ def energy(model, X):
     
     dataset.loc[len(dataset)] = list(dall.values()) + [model.__name__, X.shape[0], X.shape[1]]
     dataset = rename_categorical_cols(dataset)
-    print(dataset)
-    #predictors = one_hot_encoding(dataset)
-    #predict(predictors)
     onehot = load('one_hot_encoder.joblib')
     transformed = onehot.transform(dataset)
     one_hot_df = pd.DataFrame(transformed.todense(), columns=onehot.get_feature_names_out())
