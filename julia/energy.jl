@@ -11,15 +11,15 @@ Y = randn(1000000)
 ### Testing Linear Regressor
 
 py"""
-IP = IntelPowerGadget(duration=2, resolution=1000,
-log_file_name='LinearRegressor.csv')
+from codecarbon import EmissionsTracker
+from datetime import datetime
 
+tracker = EmissionsTracker(output_dir ='logs', output_file="sub_dataset_energy.csv", log_level='error')
 """
 
-py"IP"._setup_cli()
+py"tracker".start()
 machine(LinearRegressor(), X, Y)|>fit!
-py"time.sleep"(15)
-py"IP"._log_values()
+py"tracker".stop()
 
 ### Testing Ridge Regressor
 
