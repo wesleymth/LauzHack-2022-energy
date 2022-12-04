@@ -6,6 +6,7 @@ import time
 from tqdm import tqdm
 #from dataset_initiator import dataset_initiator
 
+np.random.seed()
 def dataset_generator(nb_dataset_=5) : 
     Xs_train, ys_train = train_data_generator(D_sup_N = False, nb_dataset = nb_dataset_)
     #dataset = dataset_initiator()
