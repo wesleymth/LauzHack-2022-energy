@@ -5,9 +5,9 @@ from sklearn.linear_model import RidgeCV
 from sklearn.ensemble import GradientBoostingRegressor
 
 
-def train_models(path_dataset = 'energy_dataset.csv') :
+def train_models(dataset = 'energy_dataset.csv') :
     #Data preprocessing
-    dataset = pd.read_csv(path_dataset)
+    if type(dataset) == str : dataset= pd.read_csv(path_dataset)
     dataset_X = dataset.iloc[:,:-1]
     costs = dataset.iloc[:,-1]
 
