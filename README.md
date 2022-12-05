@@ -28,6 +28,6 @@ We have also plotted the predictions of a LinearRegressor fitted on our dataset.
 
 We can see that our models .... predicts the energy consumption.
 <p align="center">
-<img src="./data/img/3.png" alt="Energy comsumption vs "/>
+<img src="./data/img/5.png" alt="Energy comsumption vs "/>
 </p>
 
